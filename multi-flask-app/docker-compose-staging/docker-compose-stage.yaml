@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+   auth_service:
+       build: ./auth_service
+       container-name: flask_auth
+       expose:
+         - "5000"
+       environment:
+         - SECRET_KEY=${API_SECRET} 
+       args:
+         -VERSION =
+       image:
+          -
+       healthcheck:
+         test: ["CMD", "curl", "-f", "https://localhost:expose/health"]
+         interval: 10s
+         timeout: 5s
+         retries: 3
+       deploy:
+         resources:
+           limits:
+             cpus: '0.5'
+             memory: 256M
+           reservations:
+             cpus: '0.25'
+             memory: 100M
+       restart: unless-stopped
+       logging:
+         driver: "json-file"
+         options:
+           max-size: "10m" 
+           max-file: "3m"
+       volumes:
+         - ./logs:/app/logs
+
